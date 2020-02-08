@@ -22,9 +22,12 @@ module.exports.routes = {
   '/': { view: 'pages/homepage' },
   'GET /inventories': 'InventoryController.getInventory',
   'POST /addInventories':'InventoryController.addInventory',
-  'PUT /update' : 'InventoryController.updateInventory',
-  'DELETE /delete' : 'InventoryController.deleteInventory',
-  'POST /createOrder' : 'OrderController.createOrder'
+  'PUT /updateInventory' : 'InventoryController.updateInventory',
+  'DELETE /deleteInventory' : 'InventoryController.deleteInventory',
+  'POST /createOrder' : 'OrderController.createOrder',
+  'GET /orders' :'OrderController.getOrder',
+  'PUT /updateOrder':'OrderController.updateOrder',
+  'DELETE /deleteOrder':'OrderController.deleteOrder'
 
 
   /***************************************************************************
