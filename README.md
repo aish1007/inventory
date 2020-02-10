@@ -82,7 +82,7 @@ The web service enables customers to order products via REST API from an invento
     - Parameters - id/name (passed in the query param)
     - Response - Returns a success message [String]
     - Throws error message when the product does not exist
-    - Example request - DELETE http://localhost:1337/deleteInventories?name=redmi
+    - Example request - DELETE http://localhost:1337/deleteInventory?name=redmi
 - Read all orders 
     - Route - GET /orders
     - Response - Returns the list of orders [Array of objects]
@@ -99,10 +99,10 @@ The web service enables customers to order products via REST API from an invento
     - The order will not be placed if the order quantity for the product exceeds the inventory quantity
     - The order will not be placed if the product does not exist in the inventory
     - Example request
-      - URL - http://localhost:1337/createOrder
+      - URL - POST http://localhost:1337/createOrder
       - Body - {
                 "email" : "david@gmail.com",
-                "inventoryList" : [{"name" : "mac", "qty" : 3}]
+                "inventoryList" : [{"name" : "lenovo", "qty" : 3}]
                 }
 - Delete a order 
    - Route - DELETE /deleteOrder
@@ -110,7 +110,7 @@ The web service enables customers to order products via REST API from an invento
     - Response - Returns a success message [String]
     - Throws error message when order does not exist 
     - Example request
-      - URL - http://localhost:1337/deleteOrder&customerEmail=david@gmail.com
+      - URL - DELETE http://localhost:1337/deleteOrder&customerEmail=david@gmail.com
 - Update a order 
     - Route - PUT /updateOrder
     - Parameters - id and orderedItems
@@ -119,15 +119,14 @@ The web service enables customers to order products via REST API from an invento
     - A order will not be updated if there is no change in the product quantity 
     - A order will not be updated if there is no order record
     - Example request
-      - URL - http://localhost:1337/deleteOrder&customerEmail=david@gmail.com
+      - URL - PUT http://localhost:1337/updateOrder
       - Body - {
-            	"id":12,
-            	"orderedItems":[{"name" : "lenovo","qty" : 4}]
+            	"id":25,
+            	"orderedItems":[{"name" : "asus","qty" : 4}]
                }
 
 ### Todos
 - Write more test cases
 - Add a front end to the app
-
 
 
