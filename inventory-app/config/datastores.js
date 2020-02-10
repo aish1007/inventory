@@ -49,8 +49,8 @@ module.exports.datastores = {
     *                                                                          *
     ***************************************************************************/
     adapter: 'sails-mysql',
-    //url: 'mysql://admin:root1234@inventory.cxbwm4fch9kz.us-east-2.rds.amazonaws.com:3306/inventoryapp',
-    url:'mysql://root:root1234@127.0.0.1:3306/inventoryapp'
+    url: 'mysql://admin:root1234@inventory.cxbwm4fch9kz.us-east-2.rds.amazonaws.com:3306/inventoryapp',
+    //url:'mysql://root:root1234@127.0.0.1:3306/inventoryapp'
 
   },
 

@@ -42,18 +42,18 @@ module.exports = {
         }));
         //ordering valid items
         reqObj.orderedInventory = JSON.stringify(data.filter(elt => elt.orderStatus == "confirmed"));
-        if(reqObj.orderedInventory){
+        if(reqObj.orderedInventory != "[]"){
             result = await Order.create(reqObj).fetch();
         }
 
         //sending response back to the user based on order status
         var responseArr = data.map((elt) => { 
             if(!("orderStatus" in elt)){
-                return "The product "+ elt.name +" does not exist";
+                return "The product "+ elt.name +" does not exist in the inventory";
             }
             else if(elt.orderStatus == "denied")
             {
-                return "The order for product "+elt.name+" has been denied";
+                return "The order for product "+elt.name+" has been denied as it exceeds inventory quantity";
             }
             else if(elt.orderStatus == "confirmed" && result != []){
                 return "The order for product "+elt.name+" has been placed";
@@ -63,15 +63,14 @@ module.exports = {
         res.send(responseArr);
       },
 
-      //getting a single order record
+      //getting a single order with a customer email or a id
       getOrder : async function(req,res){
         var result = [];
         var orderRecord = [];
         var reqObj = req.query;
         var obj = await Order.find(reqObj);
-        console.log("fetched obj",obj);
         if(obj == ''){
-            result = "Id doesn't exist";
+            result = "Order record does not exist";
         }
         else{
             result = obj;
@@ -83,7 +82,6 @@ module.exports = {
       updateOrder: async function(req,res){
        var result=[];
        var orderDbUpdate = [];
-       console.log(req.body);
        //new order update
         var reqObj = {
             id : req.body.id,
@@ -92,8 +90,7 @@ module.exports = {
         
         //finding old order record
         var orderRecord = await Order.find({id : reqObj.id});
-        var oldOrder = JSON.parse(orderRecord[0].orderedInventory);
-
+        var oldOrder = JSON.parse(orderRecord[0].orderedInventory);  
         //comparing old and new orders and updating their quantity 
          await Promise.all(reqObj.newOrder.map(async(newOrderElt) =>{ 
              await Promise.all(oldOrder.map(async(oldOrderElt) => {
@@ -101,7 +98,6 @@ module.exports = {
             
                 //retrieving the matched product from the inventory
                 var inventoryObj = await Inventory.find({name: newOrderElt.name});
-                  console.log(inventoryObj);  
 
                 if(newOrderElt.qty > oldOrderElt.qty){
                     var updatedQty = newOrderElt.qty - oldOrderElt.qty;
@@ -111,11 +107,11 @@ module.exports = {
                         oldOrderElt.qty = newOrderElt.qty;
                         oldOrderElt.orderStatus = "updated";
                         await Inventory.update({name : oldOrderElt.name}).set({qty : inventoryDbupdate });
-                        result.push("The order for"+ oldOrderElt.name + " has been successfully updated to quantity: "+ oldOrderElt.qty);
+                        result.push("The order for "+ oldOrderElt.name + " has been successfully updated to quantity: "+ oldOrderElt.qty);
                     } 
                     else
                     {
-                        result.push("The order for "+ newOrderElt.name +" cannot be updated as the quantity exceeds the inventory capacity\n");
+                        result.push("The order for "+ newOrderElt.name +" cannot be updated as the quantity exceeds the inventory capacity");
                     }
                 }
                 else if(newOrderElt.qty < oldOrderElt.qty){
@@ -128,7 +124,7 @@ module.exports = {
                     
                 }
                 else{
-                    result.push("There is no updation as the quantity for the product "+ newOrderElt.name+" is same for both the orders\n");
+                    result.push("There is no updation as the quantity for the product "+ newOrderElt.name+" is same for both the orders");
                 }
             }
         }))}));
@@ -144,25 +140,23 @@ module.exports = {
         
       },
 
+      //deleting a order with customer name or a id
       deleteOrder : async function(req,res){
-        var reqId = req.query.id;
-        var obj = await Order.find({ id:reqId });
+        var reqObj = req.query;
+        var obj = await Order.find(reqObj);
         if(obj == ''){
-            result = "Id doesn't exist in order records";
+            result = "Product does not exist in order records";
         }
         else{
-            console.log(obj);
             var orderedInventories = JSON.parse(obj[0].orderedInventory);
             Promise.all(orderedInventories.map(async(elt) => { 
                 var inventoryQty = await Inventory.find({name : elt.name});
                 var updatedInventoryQty = inventoryQty[0].qty+ elt.qty;
                 await Inventory.update({name:elt.name}).set({ qty: updatedInventoryQty});
-                console.log("done");
             }));
-            var deletedOrder = await Order.destroyOne({id: reqId});
-            console.log(deletedOrder);
+            var deletedOrder = await Order.destroyOne(reqObj);
             if(deletedOrder != ''){
-                result = "Order record "+ reqId+" successfully deleted";
+                result = "The order has been successfully deleted";
             }
             
         }

@@ -7,19 +7,21 @@
 var request = require('request');
 module.exports = {
 
+//fetch a product with a name or a id
 getInventory: async function(req,res){
     var result;
     var reqObj = req.query;
     var obj = await Inventory.find(reqObj);
-    console.log("fetched obj",obj);
     if(obj == ''){
-        result = "Id doesn't exist";
+        result = "Product does not exist";
     }
     else{
         result = obj;
     }
     res.send(result);
 },
+
+//creating a new inventory
 addInventory: async function(req,res){
     var result;
     var reqObj = req.query;
@@ -32,14 +34,17 @@ addInventory: async function(req,res){
     }
     res.send(result);
 },
+
+//updating a inventory with id
 updateInventory : async function(req,res){
     var result;
     var reqObj = req.query;
-    var updateObj = _.omit(reqObj,'id'); 
-    var updatedObj = await Inventory.update({ id:reqObj.id })
+    var updateObj = _.omit(reqObj,'id');
+    var updatedObj = await Inventory.update({id : reqObj.id})
     .set(updateObj).fetch();
+
     if(updatedObj == ''){
-        result = "Id doesn't exist";
+        result = "Id does not exist";
     }
     else{
         result = updatedObj;
@@ -48,14 +53,15 @@ updateInventory : async function(req,res){
 
 },
 
+//delete a product with a name or a id
 deleteInventory: async function(req,res){
     var reqObj = req.query;
-    var obj = await Inventory.find({ id:reqObj.id });
+    var obj = await Inventory.find(reqObj);
     if(obj == ''){
-        result = "Id doesn't exist";
+        result = "Product does not exist";
     }
     else{
-        await Inventory.destroyOne({id: reqObj.id});
+        await Inventory.destroyOne(reqObj);
         result = "Inventory successfully deleted";
     }
     res.send(result);
