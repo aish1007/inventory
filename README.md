@@ -23,7 +23,7 @@ The web service enables customers to order products via REST API from an invento
 
 * Sails.js - Model-View-Controller web application framework to develop REST API.
 * Node.js - Javascript run time environment required for running Sails.js.
-* MySQL - Database used for  maintaining inventory and order records 
+* MySQL - Cloud Database used for  maintaining inventory and order records 
 * Nodemon - Tool used for automatic restart of the app when any changes are made in a file.
 * Mocha and Chai - Javascript frameworks used for unit testing
 
