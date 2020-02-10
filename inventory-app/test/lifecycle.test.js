@@ -18,7 +18,7 @@ sails.lift({
      grunt: false
    }
 }, function (err, server) {
-   if (err) returndone(err);
+   if (err) return done(err);
    // here you can load fixtures, etc.
    done(err, sails);
 });
